@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+
+
+
+
+    <LinearLayout
+        android:id="@+id/MainLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <TimePicker
+            android:id="@+id/timePicker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"/>
+
+
+
+        <LinearLayout
+        android:id="@+id/jour1Layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/timePicker"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+            <CheckBox android:id="@+id/checkbox_lundi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lundi"
+                android:layout_margin="10dp"
+                android:onClick="onCheckboxClicked"/>
+            <CheckBox android:id="@+id/checkbox_mardi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mardi"
+                android:layout_margin="10dp"
+                android:onClick="onCheckboxClicked"/>
+            <CheckBox android:id="@+id/checkbox_mercredi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mercredi"
+                android:layout_margin="10dp"
+                android:onClick="onCheckboxClicked"/>
+            <CheckBox android:id="@+id/checkbox_jeudi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/jeudi"
+                android:layout_margin="10dp"
+                android:onClick="onCheckboxClicked"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/jour2Layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/jour1Layout"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
+            <CheckBox android:id="@+id/checkbox_vendredi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/vendredi"
+                android:layout_margin="10dp"
+                android:onClick="onCheckboxClicked"/>
+            <CheckBox android:id="@+id/checkbox_samedi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/samedi"
+                android:layout_margin="10dp"
+                android:onClick="onCheckboxClicked"/>
+            <CheckBox android:id="@+id/checkbox_dimanche"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dimanche"
+                android:layout_margin="10dp"
+                android:onClick="onCheckboxClicked"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/orangeLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/jour2Layout"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/labelOrange"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/labelOranges"
+                android:textSize="18dp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/nbOranges"
+                android:layout_width="75dp"
+                android:layout_height="40dp"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_below="@id/orangeLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:layout_gravity="center"/>
+
+    </LinearLayout>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:ads="http://schemas.android.com/apk/res-auto" >
+
+        <LinearLayout
+            android:id="@+id/bottomLayout"
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/buttonReturn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/buttonRetour"/>
+
+            <Button
+                android:id="@+id/buttonSubmit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/buttonValider"/>
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

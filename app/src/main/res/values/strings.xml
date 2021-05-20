@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">ProjetE3</string>
+    <string name="labelPassword">Mot de passe :</string>
+    <string name="labelIP">Adresse IP :</string>
+    <string name="labelUtilisateur">Utilisateur :</string>
+    <string name="labelOranges">Nombre d\'oranges :</string>
+    <string name="buttonAjoutAlarme">Ajouter une alarme</string>
+    <string name="buttonRetour">Retour</string>
+    <string name="buttonConfiguration">Configurer la Raspberry</string>
+    <string name="buttonValider">Valider</string>
+    <string name="titleConfiguration">Configuration de la Raspberry</string>
+    <string name="lundi">Lundi</string>
+    <string name="mardi">Mardi</string>
+    <string name="mercredi">Mercredi</string>
+    <string name="jeudi">Jeudi</string>
+    <string name="vendredi">Vendredi</string>
+    <string name="samedi">Samedi</string>
+    <string name="dimanche">Dimanche</string>
+
+
+
+</resources>
