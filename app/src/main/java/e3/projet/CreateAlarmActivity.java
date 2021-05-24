@@ -76,8 +76,8 @@ public class CreateAlarmActivity extends AppCompatActivity {
 
 
                 // Création de la tache programmée
-                Alarm vAlarm = new Alarm(timeHour,timeMinutes,nbOranges,boolJours);
-                vAlarm.createAlarm(getApplicationContext());
+                Alarm vAlarm = new Alarm(getApplicationContext(),timeHour,timeMinutes,nbOranges,boolJours);
+                vAlarm.createAlarm();
 
                 // Nécessaire sinon l'alarmClock n'est pas set, on change d'activité trop rapidement
                 SystemClock.sleep(1000);

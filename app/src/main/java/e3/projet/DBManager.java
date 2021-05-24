@@ -62,7 +62,7 @@ public class DBManager {
         return cursor;
     }
 
-    public int update(int _id, int hour, int minutes, int nbOranges, boolean enable ,HashMap<String, Short> boolJours) {
+    public int update(int _id, int hour, int minutes, int nbOranges, short enable ,HashMap<String, Short> boolJours) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(DatabaseHelper.HOUR, hour);
         contentValues.put(DatabaseHelper.MINUTES, minutes);
@@ -71,6 +71,13 @@ public class DBManager {
         for  (String i : boolJours.keySet()) {
             contentValues.put("enable"+i, boolJours.get(i).shortValue());
         }
+        int i = database.update(DatabaseHelper.TABLE_NAME, contentValues, DatabaseHelper._ID + " = " + _id, null);
+        return i;
+    }
+
+    public int updateEnable(int _id, int enable) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatabaseHelper.ENABLE, enable);
         int i = database.update(DatabaseHelper.TABLE_NAME, contentValues, DatabaseHelper._ID + " = " + _id, null);
         return i;
     }
