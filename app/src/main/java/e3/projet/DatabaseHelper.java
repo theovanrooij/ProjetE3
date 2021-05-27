@@ -36,8 +36,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Creating table query
     private static final String CREATE_TABLE = "create table " + TABLE_NAME + "(" + _ID
-            + " INTEGER PRIMARY KEY AUTOINCREMENT, " + HOUR + " TINYINT NOT NULL, " + MINUTES + " TINYINT NOT NULL, " + ORANGES + " TINYINT NOT NULL, "+ ENABLE +" TINYINT NOT NULL, "+  SUNDAY +" TINYINT NOT NULL,"+ MONDAY +" TINYINT NOT NULL, "+ TUESDAY +" TINYINT NOT NULL, "+ WEDNESDAY +" TINYINT NOT NULL" +
-            ", "+ THURSDAY +" TINYINT NOT NULL, "+ FRIDAY +" TINYINT NOT NULL, "+ SATURDAY +" TINYINT NOT NULL);";
+            + " INTEGER PRIMARY KEY AUTOINCREMENT, " + HOUR + " TINYINT NOT NULL, " + MINUTES + " TINYINT NOT NULL, " +  ORANGES + " TINYINT NOT NULL, "+ 
+            ENABLE +" TINYINT NOT NULL, "+  SUNDAY +" TINYINT NOT NULL,"+ MONDAY +" TINYINT NOT NULL, "+ TUESDAY +" TINYINT NOT NULL, "+ 
+            WEDNESDAY +" TINYINT NOT NULL" +", "+ THURSDAY +" TINYINT NOT NULL, "+ FRIDAY +" TINYINT NOT NULL, "+ SATURDAY +" TINYINT NOT NULL);";
 
     public DatabaseHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);

@@ -55,7 +55,7 @@ public class Alarm {
     }
 
     private void createAlarmClock(){
-        //Création de l'alarme Sonore avec alarmClock
+        //éation de l'alarme Sonore avec alarmClock
         ArrayList<Integer> repeatDays = new ArrayList<>();
         for  (String i : boolJours.keySet()) {
 

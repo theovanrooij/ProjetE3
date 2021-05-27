@@ -59,7 +59,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         // ringAlarm(context,timeHour,timeMinutes);
 
         // Execution de la commande
-        //sendCommandRaspberry(context,cursor.getInt(3););
+        sendCommandRaspberry(context,nbOranges);
 
         Alarm alarm = new Alarm(context,idAlarm,timeHour,timeMinutes,nbOranges);
         alarm.setNextAlarm();
@@ -77,7 +77,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         String password = pref.getString("password", null); // getting String
 
         int port = 22;
-        String command="touch "+Integer.toString(nbOranges)+".txt";
+        String command="touch "+Integer.toString(idAlarm)+".txt";
 
         try {
 

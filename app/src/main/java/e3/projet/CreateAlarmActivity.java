@@ -70,7 +70,7 @@ public class CreateAlarmActivity extends AppCompatActivity {
                 timeHour = picker.getCurrentHour();
                 timeMinutes = picker.getCurrentMinute();
                 nbOranges=0;
-                //nbOranges = Short.parseInt(mEditText.getText().toString());
+                nbOranges = Short.parseShort(mEditText.getText().toString());
 
                 mTextView.setText("Heure : " + timeHour + ":" + timeMinutes +", " + nbOranges +" oranges \n");
 
