@@ -23,6 +23,7 @@ public class Alarm {
     private int nbOranges;
     private HashMap<String, Short> boolJours;
     private Context context;
+    private Cursor cursor;
 
     // Permet de l'initaliser a partir d'une alarme non existante
     public Alarm (Context context, final int pTimeHour,final int pTimeMinutes,final int pNbOranges,final HashMap<String, Short> pBoolJours) {
@@ -40,51 +41,64 @@ public class Alarm {
         this.timeMinutes = pTimeMinutes;
         this.nbOranges = pNbOranges;
         this.context =  context;
+
+
+        DBManager dbManager = new DBManager(context);
+        dbManager.open();
+        this.cursor = dbManager.fetch(Integer.toString(this.idAlarm));
+
+        dbManager.close();
     }
 
-    public void createAlarm() {
-        this.saveAlarm();
+    public void setAlarm() {
         this.setAlarmManager(true);
         this.createAlarmClock();
+    }
+    
+    public void createAlarm() {
+        this.saveAlarm();
+        this.setAlarm();
 
     }
 
     public void setNextAlarm() {
-
         this.setAlarmManager(false);
+
     }
 
     private void createAlarmClock(){
-        //éation de l'alarme Sonore avec alarmClock
+        //ï¿½ation de l'alarme Sonore avec alarmClock
         ArrayList<Integer> repeatDays = new ArrayList<>();
-        for  (String i : boolJours.keySet()) {
 
-            if (boolJours.get(i).shortValue() == 1){
-                switch (i){
-                    case "MONDAY":
-                        repeatDays.add(Calendar.MONDAY);//Monday
+        for (int i=0; i<7;i++) { // Nombre de jour de la semaine
+            // On regarde si le jour est active
+            if(cursor.getShort(5 + i) == 1){
+                switch (i) {
+                    case 0 :
+                        repeatDays.add(Calendar.SUNDAY);
                         break;
-                    case "TUESDAY":
-                        repeatDays.add(Calendar.TUESDAY);//Monday
+                    case 1:
+                        repeatDays.add(Calendar.MONDAY);
                         break;
-                    case "WEDNESDAY":
-                        repeatDays.add(Calendar.WEDNESDAY);//Monday
+                    case 2 :
+                        repeatDays.add(Calendar.TUESDAY);
                         break;
-                    case "THURSDAY":
+                    case 3:
+                        repeatDays.add(Calendar.WEDNESDAY);
+                        break;
+                    case 4:
                         repeatDays.add(Calendar.THURSDAY);//Monday
                         break;
-                    case "FRIDAY":
+                    case 5 :
                         repeatDays.add(Calendar.FRIDAY);//Monday
                         break;
-                    case "SATURDAY":
+                    case 6:
                         repeatDays.add(Calendar.SATURDAY);//Monday
-                        break;
-                    case "SUNDAY":
-                        repeatDays.add(Calendar.SUNDAY);//Monday
                         break;
                 }
             }
         }
+
         // https://www.youtube.com/watch?v=qZdVUyLR-_M
         Intent intent = new Intent(AlarmClock.ACTION_SET_ALARM);
         intent.putExtra(AlarmClock.EXTRA_DAYS,repeatDays); // time
@@ -93,7 +107,7 @@ public class Alarm {
         intent.putExtra(AlarmClock.EXTRA_MINUTES, timeMinutes);
         intent.putExtra(AlarmClock.EXTRA_MESSAGE, Integer.toString(idAlarm));
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        // On déclenche l'alarme
+        // On dï¿½clenche l'alarme
 
         context.startActivity(intent);
     }
@@ -102,11 +116,11 @@ public class Alarm {
 
     private void setAlarmManager(boolean isNewAlarm) {
 
-        // Lancement de l'alarm Manager. L'alarme sonore est déclencher par le Receiver
+        // Lancement de l'alarm Manager. L'alarme sonore est dï¿½clencher par le Receiver
         Calendar calendar = getCalendar(isNewAlarm);
-        if (calendar == null) { // Il n'y pas d'alarme à set
+        if (calendar == null) { // Il n'y pas d'alarme ï¿½ set
             Log.d("ProjetE3","Pas de repetition");
-            // mettre le champs enable à 0
+            // mettre le champs enable ï¿½ 0
             DBManager dbManager = new DBManager(context);
             dbManager.open();
 
@@ -139,8 +153,7 @@ public class Alarm {
             // setExact instead
             am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,time, pi);
             //Log.d("ProjetE3", "Calendar new");
-        } else //setting the repeating alarm that will be fired every day
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             am.setExact(AlarmManager.RTC_WAKEUP, time, pi);
         } else {
             am.set(AlarmManager.RTC_WAKEUP, time, pi);
@@ -149,26 +162,15 @@ public class Alarm {
         Toast.makeText(context, "AlarmManager is set", Toast.LENGTH_SHORT).show();
     }
 
-    public static void test(Context context) {
-        //creating a new intent specifying the broadcast receiver
-        Intent i2 = new Intent(context, AlarmReceiver.class);
-
-        i2.putExtra("EXTRA_ID_ALARM", Long.toString(-1));
-
-        //creating a pending intent using the intent
-        PendingIntent pi = PendingIntent.getBroadcast(context, 0, i2, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()
-                + 5000, pi);
-
-    }
-    // Retourne l'id de l'alarme insérée
+    // Retourne l'id de l'alarme insï¿½rï¿½e
     private void saveAlarm(){
-        // On ouvre la base de donnée
+        // On ouvre la base de donnï¿½e
         DBManager dbManager = new DBManager(context);
         dbManager.open();
 
         this.idAlarm = dbManager.insert(timeHour,timeMinutes,nbOranges,true,boolJours);
+        cursor = dbManager.fetch(Integer.toString(this.idAlarm));
+
         dbManager.close();
 
         Log.d("ProjetE3", "idAlarme = "+Integer.toString(this.idAlarm));
@@ -176,9 +178,9 @@ public class Alarm {
 
     private Calendar getCalendar(boolean isNewAlarm){
         // Traitement des checkbox
-        // si vide, on regarde si l'heure est pour plus tard dans la journée ou si le lendemain afin de passé les bonnes valeurs dans l'Alarm
+        // si vide, on regarde si l'heure est pour plus tard dans la journï¿½e ou si le lendemain afin de passï¿½ les bonnes valeurs dans l'Alarm
 
-        // Si l'alarme n'est pas nouvelle, le prochain jour d'activation est juste à récupérer avec getNextDay
+        // Si l'alarme n'est pas nouvelle, le prochain jour d'activation est juste ï¿½ rï¿½cupï¿½rer avec getNextDay
         if (!isNewAlarm) {
             //Log.d("ProjetE3", "Calendar next");
             return this.getNextDay(); // retourne un calendrier set au prochain jour d'activation
@@ -186,41 +188,49 @@ public class Alarm {
         }
         //Log.d("ProjetE3", "Calendar new");
         // Si isNewAlarm == true alors on doit rechercher quand activer l'alarme
-        Calendar calendar = Calendar.getInstance(); // On récupère l'heure actuelle
+        Calendar calendar = Calendar.getInstance(); // On rï¿½cupï¿½re l'heure actuelle
 
         int actualHour = calendar.get(Calendar.HOUR_OF_DAY);
         int actualMinutes = calendar.get(Calendar.MINUTE);
 
-        // ON regarde si aucun jour n'est coché
-        boolean emptyJours = true;
-        for  (String i : boolJours.keySet()) {
-            if (boolJours.get(i).shortValue() == 1)
-                emptyJours = false;
-        }
+
         //Log.d("ProjetE3", "Boolean");
         String dayLongName = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
+        int today = Calendar.DAY_OF_WEEK -1;
+        if (today == 0){
+            today = 6;
+        }else if (today == 6){
+            today = 0;
+        }
+        Log.d("ProjetE3", "Today : "+today);
+        Log.d("ProjetE3", "TodayEnable : "+cursor.getShort(5+today));
+        boolean emptyJours = !this.isRepeating();
 
-        // Si aucun jour n'est rempli c'est soit le jour même soit le lendemain
+        // Si aucun jour n'est rempli c'est soit le jour mï¿½me soit le lendemain
         if (emptyJours ) {
             Log.d("ProjetE3", "Empty");
-            // Par défaut on programme l'alarm pour le jour même
+            // Par dï¿½faut on programme l'alarm pour le jour mï¿½me
             calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
                     timeHour, timeMinutes, 0);
-            if (!(timeHour > actualHour || actualHour == timeHour && timeMinutes>actualMinutes)) { // Si l'horaire est inférieur à l'heure actuelle on programme pour le lendemain
+            if (!(timeHour > actualHour || actualHour == timeHour && timeMinutes>actualMinutes)) { // Si l'horaire est infï¿½rieur ï¿½ l'heure actuelle on programme pour le lendemain
                 Log.d("ProjetE3", "demain");
                 //Log.d("ProjetE3", Integer.toString(actualHour)+" "+Integer.toString(timeHour) + " |"+Integer.toString(actualMinutes)+" "+Integer.toString(timeMinutes));
                 calendar.add(Calendar.DAY_OF_MONTH, 1);
             }
-        } else if ( boolJours.get(dayLongName.toUpperCase()).shortValue() == 1){
-            // Si le jour même est coché, il faut regardé si on peut programmé pour le jour même ou si on prend le prochain jour
-            if (!(timeHour > actualHour || actualHour == timeHour && timeMinutes>actualMinutes)) { // Si l'horaire est inférieur à l'heure actuelle on programme pour le prochain jour sélectionné
+        } else if ( cursor.getShort(5+today) == 1){
+
+            // Pas regardï¿½ la case cochï¿½ mais la valeur dans bdd
+
+
+            // Si le jour mï¿½me est cochï¿½, il faut regardï¿½ si on peut programmï¿½ pour le jour mï¿½me ou si on prend le prochain jour
+            if (!(timeHour > actualHour || actualHour == timeHour && timeMinutes>actualMinutes)) { // Si l'horaire est infï¿½rieur ï¿½ l'heure actuelle on programme pour le prochain jour sï¿½lectionnï¿½
                 calendar = this.getNextDay(); // retourne un calendrier set au prochain jour d'activation
             } else { // On peut programmer pour aujourd'hui
                 calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
                         timeHour, timeMinutes, 0);
 
             }
-        }  else{ // il faut récupérer le prochain jour
+        }  else{ // il faut rï¿½cupï¿½rer le prochain jour
             Log.d("ProjetE3", "Not Empty");
             calendar = this.getNextDay(); // retourne un calendrier set au prochain jour d'activation
         }
@@ -231,7 +241,7 @@ public class Alarm {
     // https://stackoverflow.com/questions/19051622/set-calendar-to-next-thursday
     private Calendar getNextDay(){
 
-        // Récupération des datas dans la base de données :
+        // Rï¿½cupï¿½ration des datas dans la base de donnï¿½es :
         DBManager dbManager = new DBManager(context);
         dbManager.open();
 
@@ -239,14 +249,12 @@ public class Alarm {
         //Log.d("ProjetE3", "id Alarme" + Integer.toString(idAlarm));
         dbManager.close();
 
-        Calendar calendar = Calendar.getInstance(); // On récupère la date actuelle
+        Calendar calendar = Calendar.getInstance(); // On rï¿½cupï¿½re la date actuelle
         //Log.d("ProjetE3", "date actuelle");
-        displayCalendar(calendar);
         calendar.add(Calendar.DAY_OF_WEEK, 1); // On ajoute un jour au jour actuel
         //Log.d("ProjetE3", "date j+1");
-        displayCalendar(calendar);
         int nextDay = calendar.get(Calendar.DAY_OF_WEEK)-1; // Permet d'obtenir le lendemain
-        // On fait -1 car on commence à compter à partir de 1
+        // On fait -1 car on commence ï¿½ compter ï¿½ partir de 1
 
         int activeDay=0;
 
@@ -265,7 +273,7 @@ public class Alarm {
             }
         }
         //Log.d("ProjetE3", "sortie for");
-        if (activeDay==0){ // Cela veut dire que l'alarme n'est pas censé se répéter
+        if (activeDay==0){ // Cela veut dire que l'alarme n'est pas censï¿½ se rï¿½pï¿½ter
             return null;
         }
         Log.d("ProjetE3", "nextDay = "+Integer.toString(nextDay));
@@ -274,11 +282,11 @@ public class Alarm {
     }
 
     public Calendar SetToNextDayOfWeek(int dayOfWeekToSet){
-        Calendar calendar = Calendar.getInstance(); // On récupère la date actuelle
+        Calendar calendar = Calendar.getInstance(); // On rï¿½cupï¿½re la date actuelle
 
         // On initialise le Calendar pour le lendemain
         calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)+1,
-                timeHour, timeMinutes, 0); // On retire 5 secondes pour avoir le temps d'effectuer toutes les opérations dans le Receiver
+                timeHour, timeMinutes, 0); // On retire 5 secondes pour avoir le temps d'effectuer toutes les opï¿½rations dans le Receiver
 
         int currentDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)-1; // Day of week commence a 1
         //add 1 day to the current day until we get to the day we want
@@ -296,5 +304,53 @@ public class Alarm {
     public void displayCalendar(Calendar calendar) {
 
         Log.d("ProjetE3","Prochaine alarme : "+calendar.get(Calendar.YEAR) + "/"+calendar.get(Calendar.MONTH)+"/"+calendar.get(Calendar.DAY_OF_MONTH)+" "+calendar.get(Calendar.HOUR_OF_DAY)+":"+calendar.get(Calendar.MINUTE));
+    }
+
+    public boolean isRepeating(){
+        // ON regarde si aucun jour n'est cochï¿½
+        for (int i=0; i<7;i++) { // Nombre de jour de la semaine
+            // On regarde si le jour est active
+            if(cursor.getShort(5 + i) == 1){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static String getStringDays(Cursor cursor){
+        String days="";
+        for (int i=0; i<7;i++) { // Nombre de jour de la semaine
+            // On regarde si le jour est active
+            if(cursor.getShort(5 + i) == 1){
+                switch (i) {
+                    case 0:
+                        days+="Dimanche, ";
+                        break;
+                    case 1 :
+                        days+="Lundi, ";
+                        break;
+                    case 2:
+                        days+="Mardi, ";
+                        break;
+                    case 3 :
+                        days+="Mercredi, ";
+                        break;
+                    case 4:
+                        days+="Jeudi, ";
+                        break;
+                    case 5:
+                        days+="Vendredi, ";
+                        break;
+                    case 6 :
+                        days+="Samedi, ";
+                        break;
+                }
+            }
+        }
+        if(days.isEmpty()) {
+            return "Aucune repetition";
+        }
+        days = days.substring(0,days.length()-1);
+        return days;
     }
 }

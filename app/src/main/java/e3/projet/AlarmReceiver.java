@@ -55,11 +55,10 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         int nbOranges = Integer.parseInt(orangesString);
 
-        // Lancement de l'alarme
-        // ringAlarm(context,timeHour,timeMinutes);
 
         // Execution de la commande
-        sendCommandRaspberry(context,nbOranges);
+        CommandRaspberry.sendCommandOrangeRaspberry(context,orangesString);
+
 
         Alarm alarm = new Alarm(context,idAlarm,timeHour,timeMinutes,nbOranges);
         alarm.setNextAlarm();
@@ -67,66 +66,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 
     }
-    // https://www.youtube.com/watch?v=77sGWNGmLhw
-    // http://www.jcraft.com/jsch/examples/Exec.java.html
-    private void sendCommandRaspberry(Context context,int nbOranges){
-
-        SharedPreferences pref = context.getApplicationContext().getSharedPreferences("SSH", 0); // 0 - for private mode
-        String ip = pref.getString("ip", null); // getting String
-        String user = pref.getString("user", null); // getting String
-        String password = pref.getString("password", null); // getting String
-
-        int port = 22;
-        String command="touch "+Integer.toString(idAlarm)+".txt";
-
-        try {
-
-            // On est dans l'activité main donc besoin de rajouter ça
-
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-
-            StrictMode.setThreadPolicy(policy);
-
-            JSch jsch = new JSch();
-            Session session = jsch.getSession(user, ip, port);
-            session.setPassword(password);
-
-            // Avoid asking for key confirmation
-            Properties prop = new Properties();
-            prop.put("StrictHostKeyChecking", "no");
-            session.setConfig(prop);
-            session.connect();
-
-            Channel channel=session.openChannel("exec");
-            ((ChannelExec)channel).setCommand(command);
-            channel.setInputStream(null);
-
-            ((ChannelExec)channel).setErrStream(System.err);
-
-            channel.connect();
-
-            channel.disconnect();
-            session.disconnect();
-
-            Toast.makeText(context, "Commande éxécutée", Toast.LENGTH_SHORT).show();
-        } catch(Exception e){
-            Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
-        }
-    }
 
 
-    private void ringAlarm(Context context,int timeHour,int timeMinutes){
-        //Création de l'alarme Sonore avec alarmClock
-        // https://www.youtube.com/watch?v=qZdVUyLR-_M
-        Intent intent = new Intent(AlarmClock.ACTION_SET_ALARM);
-        intent.putExtra(AlarmClock.EXTRA_SKIP_UI,true);
-        intent.putExtra(AlarmClock.EXTRA_HOUR, timeHour);
-        intent.putExtra(AlarmClock.EXTRA_MINUTES, timeMinutes);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        // On déclenche l'alarme
-
-        context.startActivity(intent);
-        Log.d("ProjetE3", "AlarmClock set");
-    }
 
 }

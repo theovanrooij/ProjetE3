@@ -8,7 +8,11 @@
     <string name="buttonRetour">Retour</string>
     <string name="buttonConfiguration">Configurer la Raspberry</string>
     <string name="buttonValider">Valider</string>
+    <string name="buttonManuel">Lancer un pressage</string>
+    <string name="buttonSuivi">Visualiser le suivi de pressage</string>
     <string name="titleConfiguration">Configuration de la Raspberry</string>
+    <string name="titleManualLaunch">Lancement manuel</string>
+    <string name="suiviPressage">Suivi du pressage</string>
     <string name="lundi">Lundi</string>
     <string name="mardi">Mardi</string>
     <string name="mercredi">Mercredi</string>

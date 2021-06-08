@@ -2,6 +2,7 @@ package e3.projet;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.View;
@@ -12,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class ConfigurationActivity extends AppCompatActivity {
+public class ConfigurationActivity extends Activity implements View.OnClickListener {
 
     private String ip;
     private String user;
@@ -23,27 +24,30 @@ public class ConfigurationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_configuration);
 
-        Button buttonRetourMain = findViewById(R.id.buttonReturn);
+        setTitle("");
+        setContentView(R.layout.activity_configuration);
 
         pref = getApplicationContext().getSharedPreferences("SSH", 0); // 0 - for private mode
 
-        buttonRetourMain.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Retour sur la main activity
-                Intent intentReturn = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intentReturn);
+        Button buttonRetourMain = findViewById(R.id.buttonReturn);
 
-            }
-        });
+        buttonRetourMain.setOnClickListener(this);
 
         Button buttonSubmit = findViewById(R.id.buttonSubmit);
 
-        buttonSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        buttonSubmit.setOnClickListener(this);
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.buttonReturn:
+                // Retour sur la main activity
+                finish();
+                break;
+            case R.id.buttonSubmit:
                 EditText editIP = (EditText) findViewById(R.id.editIP);
                 ip = editIP.getText().toString();
 
@@ -62,21 +66,9 @@ public class ConfigurationActivity extends AppCompatActivity {
 
                 Intent intentMain = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intentMain);
-            }
-        });
-
-        ip = pref.getString("ip", null); // getting String
-        user = pref.getString("user", null); // getting String
-        password = pref.getString("password", null); // getting String
-
-        TextView inputIP = (TextView) findViewById(R.id.editIP);
-        inputIP.setText(ip);
-
-        TextView inputUser = (TextView) findViewById(R.id.editUtilisateur);
-        inputUser.setText(user);
-
-        TextView inputPassword = (TextView) findViewById(R.id.editPassword);
-        inputPassword.setText(password);
-
+                finish();
+                break;
+        }
     }
+
 }

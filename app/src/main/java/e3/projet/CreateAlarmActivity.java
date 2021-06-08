@@ -11,6 +11,8 @@ import android.os.Bundle;
 
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TimePicker;
@@ -57,8 +59,7 @@ public class CreateAlarmActivity extends AppCompatActivity {
         buttonReturn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentReturn = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intentReturn);
+                finish();
             }});
         Button buttonSubmit = findViewById(R.id.buttonSubmit);
 
@@ -83,9 +84,9 @@ public class CreateAlarmActivity extends AppCompatActivity {
                 SystemClock.sleep(1000);
 
 
-                Intent intentSubmit = new Intent(getApplicationContext(), MainActivity.class);
-                //startActivity(intentSubmit);
-
+                Intent intentMain = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intentMain);
+                finish();
             }
         });
     }
@@ -152,5 +153,21 @@ public class CreateAlarmActivity extends AppCompatActivity {
         boolJours.put("SUNDAY",FALSE);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.displayMenu) {
+            // Diplay activité avec le menu
+            Intent i = new Intent(getApplicationContext(), menu.class);
+            startActivity(i);
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
 }

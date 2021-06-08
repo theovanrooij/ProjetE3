@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/upButtonLayout"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <Button
+            android:id="@+id/buttonLaunch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/buttonManuel"
+            android:layout_gravity="center_vertical"/>
+
+        <Button
+            android:id="@+id/buttonSuivi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/buttonSuivi"
+            android:layout_gravity="center_vertical"/>
+
+        <Button
+            android:id="@+id/buttonConfiguration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/buttonConfiguration"
+            android:layout_gravity="center_vertical"/>
+
+        <Button
+            android:id="@+id/buttonAjoutAlarme"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/buttonAjoutAlarme"
+            android:layout_gravity="center_vertical"/>
+
+</LinearLayout>
