@@ -24,17 +24,44 @@
     </ScrollView>
 
     <LinearLayout
-        android:id="@+id/ProgressLayout"
+        android:id="@+id/ProgressMainLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingTop="10dp">
+        android:paddingTop="10dp"
+        >
 
-        <TextView
-            android:id="@+id/textProgress"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/ProgressLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
+            android:orientation="horizontal"
+            android:paddingTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/connexionStatus"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="20dp"/>
+
+            <View
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="@color/black"
+                android:layout_marginRight="30dp"
+                android:layout_marginLeft="30dp"/>
+
+            <TextView
+                android:id="@+id/textProgress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/black"
+                android:text="La raspberry n'est pas configurée" />
+
+        </LinearLayout>
 
         <ProgressBar
             android:id="@+id/indeterminateBar"

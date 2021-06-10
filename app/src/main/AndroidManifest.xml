@@ -8,7 +8,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
 
     <application
@@ -34,17 +33,17 @@
         </activity>
 
         <activity  android:theme="@android:style/Theme.DeviceDefault.Light.Dialog"
-            android:name=".manualLaunchActivity">
+            android:name=".ManualLaunchActivity">
         </activity>
 
         <activity  android:theme="@android:style/Theme.DeviceDefault.Light.Dialog"
-            android:name=".SuiviPressage"></activity>
+            android:name=".SuiviPressageActivity"></activity>
 
         <activity  android:theme="@android:style/Theme.DeviceDefault.Light.Dialog"
             android:name=".ConfigurationActivity"></activity>
 
         <activity  android:theme="@android:style/Theme.DeviceDefault.Light.Dialog"
-            android:name=".menu"></activity>
+            android:name=".MenuActivity"></activity>
 
         <!-- registering the receiver -->
         <receiver

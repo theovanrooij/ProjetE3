@@ -86,7 +86,6 @@ public class CreateAlarmActivity extends AppCompatActivity {
 
                 Intent intentMain = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intentMain);
-                finish();
             }
         });
     }
@@ -163,7 +162,7 @@ public class CreateAlarmActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.displayMenu) {
             // Diplay activité avec le menu
-            Intent i = new Intent(getApplicationContext(), menu.class);
+            Intent i = new Intent(getApplicationContext(), MenuActivity.class);
             startActivity(i);
 
         }

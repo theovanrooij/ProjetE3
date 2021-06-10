@@ -15,14 +15,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class manualLaunchActivity extends Activity implements OnClickListener {
+public class ManualLaunchActivity extends Activity implements OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setTitle("");
-        setContentView(R.layout.manual_launch_activty);
+        setContentView(R.layout.activty_manual_launch);
 
         Button buttonRetourMain = findViewById(R.id.buttonReturn);
 
@@ -40,6 +40,8 @@ public class manualLaunchActivity extends Activity implements OnClickListener {
         switch (v.getId()) {
             case R.id.buttonReturn:
                 // Retour sur la main activity
+                Intent i = new Intent(getApplicationContext(), MenuActivity.class);
+                startActivity(i);
                 finish();
                 break;
 
@@ -53,7 +55,7 @@ public class manualLaunchActivity extends Activity implements OnClickListener {
                 // Execution de la commande
                 CommandRaspberry.sendCommandOrangeRaspberry(getApplicationContext(),nbOranges);
 
-                Intent intentSuivi = new Intent(getApplicationContext(), SuiviPressage.class);
+                Intent intentSuivi = new Intent(getApplicationContext(), SuiviPressageActivity.class);
                 startActivity(intentSuivi);
                 finish();
                 break;

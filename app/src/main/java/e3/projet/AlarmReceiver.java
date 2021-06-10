@@ -63,6 +63,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         Alarm alarm = new Alarm(context,idAlarm,timeHour,timeMinutes,nbOranges);
         alarm.setNextAlarm();
 
+        Intent i = new Intent(context, MainActivity.class);
+        context.startActivity(i);
 
 
     }

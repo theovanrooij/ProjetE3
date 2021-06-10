@@ -47,7 +47,7 @@ public class DBManager {
     }
 
     public Cursor fetchAll() {
-        Cursor cursor = database.query(DatabaseHelper.TABLE_NAME, null, null, null, null, null, null);
+        Cursor cursor = database.query(DatabaseHelper.TABLE_NAME, null, null, null, null, null, DatabaseHelper.HOUR+","+DatabaseHelper.MINUTES);
         if (cursor != null) {
             cursor.moveToFirst();
         }

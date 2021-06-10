@@ -353,4 +353,42 @@ public class Alarm {
         days = days.substring(0,days.length()-1);
         return days;
     }
+
+    public static void cancelAlarm(int idAlarm,Context context) {
+        Intent i = new Intent(context, AlarmReceiver.class);
+
+        // On récupère la pendingIntent
+        PendingIntent pi = PendingIntent.getBroadcast(context, idAlarm, i,  PendingIntent.FLAG_NO_CREATE);
+        Log.d("MyAlarmBelal", "Register : "+ (pi!=null));
+
+        // Changer la valeur de Enable
+        DBManager dbManager = new DBManager(context);
+        dbManager.open();
+
+        dbManager.delete(idAlarm);
+        dbManager.close();
+
+        // Cancel PendingIntent
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if(pi != null){
+            alarmManager.cancel(pi);
+            Log.d("MyAlarmBelal", "Cancel inside ");
+
+        } else {
+            Log.d("MyAlarmBelal", "Pas possible cancel : ");
+
+        }
+
+        Intent intent = new Intent(AlarmClock.ACTION_DISMISS_ALARM);
+        intent.putExtra(AlarmClock.EXTRA_ALARM_SEARCH_MODE, AlarmClock.ALARM_SEARCH_MODE_LABEL);
+        intent.putExtra(AlarmClock.EXTRA_MESSAGE, Integer.toString(idAlarm));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        // On desactive l'alarme
+
+        Toast.makeText(context, "Vérifiez que l'alarme ayant pour label : '"+idAlarm+"' soit bien désactivée ou supprimée", Toast.LENGTH_SHORT).show();
+
+        context.startActivity(intent);
+
+
+    }
 }

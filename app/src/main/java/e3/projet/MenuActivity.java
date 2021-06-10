@@ -11,7 +11,7 @@ import android.os.Bundle;
 import android.view.View.OnClickListener;
 
 
-public class menu extends Activity implements OnClickListener {
+public class MenuActivity extends Activity implements OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +19,7 @@ public class menu extends Activity implements OnClickListener {
 
         setTitle("Menu");
 
-        setContentView(R.layout.menu_layout);
+        setContentView(R.layout.activty_menu);
 
         Button buttonLaunch = findViewById(R.id.buttonLaunch);
         Button buttonConfiguration = findViewById(R.id.buttonConfiguration);
@@ -45,15 +45,17 @@ public class menu extends Activity implements OnClickListener {
                 break;
             case R.id.buttonLaunch:
                 // Retour sur la main activity
-                Intent intentLaunch = new Intent(getApplicationContext(), manualLaunchActivity.class);
+                Intent intentLaunch = new Intent(getApplicationContext(), ManualLaunchActivity.class);
                 startActivity(intentLaunch);
+                finish();
                 break;
             case R.id.buttonAjoutAlarme:
                 Intent intentAlarm = new Intent(getApplicationContext(), CreateAlarmActivity.class);
                 startActivity(intentAlarm);
+                finish();
                 break;
             case R.id.buttonSuivi:
-                Intent intentSuivi = new Intent(getApplicationContext(), SuiviPressage.class);
+                Intent intentSuivi = new Intent(getApplicationContext(), SuiviPressageActivity.class);
                 startActivity(intentSuivi);
                 break;
         }
