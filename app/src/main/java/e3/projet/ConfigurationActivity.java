@@ -1,17 +1,12 @@
 package e3.projet;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.os.Bundle;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 public class ConfigurationActivity extends Activity implements View.OnClickListener {
@@ -61,20 +56,17 @@ public class ConfigurationActivity extends Activity implements View.OnClickListe
                 finish();
                 break;
             case R.id.buttonSubmit:
-                Log.d("Projet","submit");
 
                 editor = pref.edit();
-
                 String newIp = ip.getText().toString();
                 String newUser = user.getText().toString();
                 String newPassword = password.getText().toString();
-
                 editor.putString("ip",newIp);
                 editor.putString("user",newUser);
                 editor.putString("password",newPassword);
 
                 boolean connexionBoolean = CommandRaspberry.sendCommandRaspberry(getApplicationContext(),"ls");
-                Log.d("Projet","Connexion : "+connexionBoolean);
+
                 if (connexionBoolean) {
                     // return true si il a pu executer la commande, ie si la connexion est fonctionnelle
                     editor.putBoolean("connexion",true);
@@ -82,10 +74,6 @@ public class ConfigurationActivity extends Activity implements View.OnClickListe
                     editor.putBoolean("connexion",false);
                 }
                 editor.apply();
-
-                Log.d("Projet","push");
-
-
                 Intent i = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(i);
                 finish();

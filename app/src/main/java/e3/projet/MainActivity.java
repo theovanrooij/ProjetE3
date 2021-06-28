@@ -4,21 +4,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ActionBar;
 import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Build;
-import android.provider.AlarmClock;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.os.Bundle;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -26,20 +23,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.view.Menu;
-import android.view.MenuItem;
 
-import java.io.IOException;
-import java.net.Inet4Address;
-import java.net.Inet6Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.Enumeration;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
     private Context context;
@@ -49,57 +34,76 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         this.context = getApplicationContext();
+        TextView imageSatus = (TextView) findViewById(R.id.connexionStatus);
+
+
         SharedPreferences pref = this.context.getSharedPreferences("SSH", 0); // 0 - for private mode
 
         boolean connexion = pref.getBoolean("connexion",false); // getting String
-
-        ImageView imageSatus = (ImageView) findViewById(R.id.connexionStatus);
-        Log.d("Projet","ConnexionMain : "+connexion);
-
+      
         if (!connexion) {
             imageSatus.setBackgroundResource(R.drawable.red_circle);
-        } else {
-            String nbOranges = CommandRaspberry.readFile(this.context,"nbOrangesReservoir");
-            Log.d("ProjetE3", "nbOranges : "+nbOranges);
-            if (Integer.parseInt(nbOranges) == 1)
-                imageSatus.setBackgroundResource(R.drawable.orange_circle);
-            else
-                imageSatus.setBackgroundResource(R.drawable.green_cirle);
-        }
-
-        String remplissageInfo = CommandRaspberry.readFile(this.context,"remplissageJus");
-
-        Log.d("ProjetE3", "Remplissage"+remplissageInfo);
-
-        if (remplissageInfo != null) {
-            String[] splitLine = remplissageInfo.split(":");
-            Log.d("ProjetE3", splitLine[0] + " / "+splitLine[1]);
-            float tauxFloat = Float.parseFloat(splitLine[1])/Float.parseFloat(splitLine[0])*100;
-            int taux = (int) tauxFloat;
-            Log.d("ProjetE3", "Taux : "+taux);
-            ProgressBar remplissage = (ProgressBar) findViewById(R.id.indeterminateBar);
-            if (Build.VERSION.SDK_INT >= 24) {
-                remplissage.setProgress(taux,true);
-            }
-
-            TextView remplissageText = (TextView) findViewById(R.id.textProgress);
-            remplissageText.setText("Taux de remplissage du réservoir à jus : "+taux+"%");
-        } else {
-            Log.d("ProjetE3", "NULL");
             TextView remplissageText = (TextView) findViewById(R.id.textProgress);
             remplissageText.setText("La raspberry n'est pas configuree");
+        } 
+        
+        
+        else {
+            JSONObject JSON = CommandRaspberry.getJSON(getApplicationContext());
+
+            JSONObject JSONOranges;
+            int nbOrangesReservoir=0;
+            String nbOranges=""; 
+            
+           
+
+            try {
+                JSONOranges = JSON.getJSONObject("reservoirOranges");
+                nbOrangesReservoir = JSONOranges.getInt("nbActuel");
+                nbOranges = Integer.toString(nbOrangesReservoir);
+            } catch (Exception e) {
+                Log.d("Projet E3", "Erreur lors de la lecture du fichier JSON :  " + e.getMessage());
+            }
+
+
+            if (nbOrangesReservoir == 0)
+                imageSatus.setBackgroundResource(R.drawable.orange_circle);
+            else {
+                imageSatus.setBackgroundResource(R.drawable.green_cirle);
+                imageSatus.setText(nbOranges);
+            }
+
+
+            JSONObject JSONJus;
+            int nbMaxJus=0, nbActuelJus=0;
+            
+            try {
+                JSONJus = JSON.getJSONObject("reservoirJus");
+                nbMaxJus = JSONJus.getInt("nbMax");
+                nbActuelJus = JSONJus.getInt("nbActuel");
+                
+            } catch (Exception e) {
+                Log.d("Projet E3", "Erreur lors de la lecture du fichier JSON :  " + e.getMessage());
+            }
+
+                float tauxFloat =  ((float)nbActuelJus/(float)nbMaxJus)*100;
+                int taux = (int) tauxFloat;
+                ProgressBar remplissage = (ProgressBar) findViewById(R.id.indeterminateBar);
+                if (Build.VERSION.SDK_INT >= 24) {
+                    remplissage.setProgress(taux,true);
+                }
+                TextView remplissageText = (TextView) findViewById(R.id.textProgress);
+                remplissageText.setText("Taux de remplissage du réservoir à jus : "+taux+"%");
+
         }
 
-
-
         // R�cup�ration des datas dans la base de donn�es :
-        DBManager dbManager = new DBManager(this.context);
+        DBManager dbManager = new DBManager(getApplicationContext());
         dbManager.open();
 
         Cursor cursor = dbManager.fetchAll();
 
         dbManager.close();
-
 
         LinearLayout scrollLayout = (LinearLayout)findViewById(R.id.scrollLayout);
 
@@ -110,14 +114,16 @@ public class MainActivity extends AppCompatActivity {
             title.setText("Aucune alarme n'est programmée.");
             title.setTextSize(20);
             title.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT,0));
-            title.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            if (Build.VERSION.SDK_INT >= 17) {
+                title.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            }
             title.setPadding(0,250,0,0);
             scrollLayout.addView(title);
             Intent i = new Intent(this.context, MenuActivity.class);
             startActivity(i);
             return;
         }
-        Log.d("MyAlarmBelal", "Nombre : "+cursor.getCount());
+
         boolean line = true;
         // Regarder si cursor pas vide
         do {
@@ -192,29 +198,14 @@ public class MainActivity extends AppCompatActivity {
                     int idAlarm = ((int)buttonView.getId()-1)/3;
                     
                     if (isChecked) {
-                        Log.d("MyAlarmBelal", "Set : "+idAlarm);
-                        //Update Enable dans BDD
                         DBManager dbManager = new DBManager(getApplicationContext());
                         dbManager.open();
-
                         int id = dbManager.updateEnable(idAlarm,1);
                         Cursor cursor = dbManager.fetch(Integer.toString(idAlarm));
-
-                        Log.d("ProjetE3","Update 0 : " +Integer.toString(id));
                         dbManager.close();
-
-                        // Utiliser la classe Alarm avec setNextAlarm
                         Alarm alarm = new Alarm(getApplicationContext(),idAlarm,cursor.getInt(1),cursor.getInt(2),cursor.getInt(3));
                         alarm.setAlarm();
-
-                        // set alarm clock
-                        // Regarder si il y a plusieurs jours sur l'alarme en question
-                        // Si oui ne rien faire car on ne peut pas les desactiver donc reactiver
-                        Log.d("MyAlarmBelal", "repeating : "+alarm.isRepeating());
-
                     } else {
-                        Log.d("MyAlarmBelal", "Unset : "+idAlarm);
-
                         Alarm.cancelAlarm(idAlarm,getApplicationContext());
                     }
                 }
@@ -233,18 +224,21 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     // your code
                     int idAlarm = ((int)v.getId()-2)/3;
-                    Log.d("MyAlarmBelal", "Delete : "+idAlarm);
 
                     Alarm.cancelAlarm(idAlarm,getApplicationContext());
 
+                    DBManager dbManager = new DBManager(context);
+                    dbManager.open();
+
+                    dbManager.delete(idAlarm);
+                    dbManager.close();
+
                     LinearLayout scrollLayout = (LinearLayout)findViewById(R.id.scrollLayout);
 
-                   /* Intent intentConfiguration = new Intent(this.context, MainActivity.class);
+                   Intent intentConfiguration = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(intentConfiguration);
-                    finish();*/
+                    finish();
 
-                    LinearLayout alarmLayout = (LinearLayout) findViewById(idAlarm*3);
-                    scrollLayout.removeView(alarmLayout);
                 }
             });
 
@@ -265,53 +259,24 @@ public class MainActivity extends AppCompatActivity {
             horizontalRule.setBackgroundColor(Color.BLACK);
             scrollLayout.addView(horizontalRule);
 
-            Log.d("MyAlarmBelal", "id Alarme : "+Integer.toString(cursor.getInt(0)));
             line = cursor.moveToNext();
         } while (line != false);
-        Log.d("MyAlarmBelal", "Fin cursor");
-        this.checkHosts();
 
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        Log.d("Projet","onCreateOptionsMenu");
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d("Projet","onOptionsItemSelected");
         int id = item.getItemId();
         if (id == R.id.displayMenu) {
-
-            Log.d("Projet","Menu");
             // Diplay activité avec le menu
             Intent i = new Intent(this.context, MenuActivity.class);
             startActivity(i);
-
-
         }
         return super.onOptionsItemSelected(item);
     }
-
-    public static void checkHosts() {
-        try {
-            Enumeration nis = NetworkInterface.getNetworkInterfaces();
-            while(nis.hasMoreElements())
-            {
-                NetworkInterface ni = (NetworkInterface) nis.nextElement();
-                Enumeration ias = ni.getInetAddresses();
-                while (ias.hasMoreElements())
-                {
-                    InetAddress ia = (InetAddress) ias.nextElement();
-                    if (ia.getClass() != Inet6Address.class) {
-                        Log.d("IP",ia.getHostAddress());
-                    }
-                }
-            }
-        } catch (SocketException ex) {
-            Log.d("IP","marche po");
-        }
-    }
-
 }

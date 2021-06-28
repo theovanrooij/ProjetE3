@@ -2,13 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="e3.projet">
 
-    <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-
 
     <application
         android:allowBackup="true"
@@ -17,45 +16,42 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ProjetE3">
-
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".CreateAlarmActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SET_ALARM" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
-        <activity  android:theme="@android:style/Theme.DeviceDefault.Light.Dialog"
-            android:name=".ManualLaunchActivity">
-        </activity>
-
-        <activity  android:theme="@android:style/Theme.DeviceDefault.Light.Dialog"
-            android:name=".SuiviPressageActivity"></activity>
-
-        <activity  android:theme="@android:style/Theme.DeviceDefault.Light.Dialog"
-            android:name=".ConfigurationActivity"></activity>
-
-        <activity  android:theme="@android:style/Theme.DeviceDefault.Light.Dialog"
-            android:name=".MenuActivity"></activity>
-
-        <!-- registering the receiver -->
+        <activity
+            android:name=".ManualLaunchActivity"
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog"></activity>
+        <activity
+            android:name=".SuiviPressageActivity"
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
+        <activity
+            android:name=".ConfigurationActivity"
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
+        <activity
+            android:name=".MenuActivity"
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" /> <!-- registering the receiver -->
         <receiver
             android:name=".AlarmReceiver"
             android:enabled="true"
-            android:exported="true" >
-                <intent-filter>
-                    <action android:name="android.intent.action.SET_ALARM" />
-                    <category android:name="android.intent.category.DEFAULT" />
-                </intent-filter>
-        </receiver>
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.SET_ALARM" />
 
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

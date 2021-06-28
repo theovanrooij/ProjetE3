@@ -38,13 +38,32 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="25dp"/>
 
-        <Button
-            android:id="@+id/buttonReturn"
+        <LinearLayout
+            android:id="@+id/buttonLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
-            android:text="@string/buttonRetour" />
+            android:orientation="horizontal"
+            android:layout_marginTop="25dp">
+
+            <Button
+                android:id="@+id/buttonReturn"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="@string/buttonRetour" />
+
+            <Button
+                android:id="@+id/buttonActualiser"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Actualiser" />
+
         </LinearLayout>
+
+    </LinearLayout>
+
+
 
 
 </LinearLayout>

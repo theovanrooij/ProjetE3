@@ -26,13 +26,10 @@ public class MenuActivity extends Activity implements OnClickListener {
         Button buttonAjoutAlarme = findViewById(R.id.buttonAjoutAlarme);
         Button buttonSuivi = findViewById(R.id.buttonSuivi);
 
-
         buttonLaunch.setOnClickListener(this);
         buttonConfiguration.setOnClickListener(this);
         buttonAjoutAlarme.setOnClickListener(this);
         buttonSuivi.setOnClickListener(this);
-
-        Log.d("ProjetE3","Tout est set");
 
     }
 
@@ -47,7 +44,6 @@ public class MenuActivity extends Activity implements OnClickListener {
                 // Retour sur la main activity
                 Intent intentLaunch = new Intent(getApplicationContext(), ManualLaunchActivity.class);
                 startActivity(intentLaunch);
-                finish();
                 break;
             case R.id.buttonAjoutAlarme:
                 Intent intentAlarm = new Intent(getApplicationContext(), CreateAlarmActivity.class);

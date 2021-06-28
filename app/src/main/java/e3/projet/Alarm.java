@@ -32,7 +32,6 @@ public class Alarm {
         this.nbOranges = pNbOranges;
         this.boolJours = pBoolJours;
         this.context =  context;
-        //Log.d("ProjetE3", "Alarm initialisee");
     }
 
     public Alarm(Context context, int idAlarm,final int pTimeHour,final int pTimeMinutes,final int pNbOranges) {
@@ -119,20 +118,17 @@ public class Alarm {
         // Lancement de l'alarm Manager. L'alarme sonore est d�clencher par le Receiver
         Calendar calendar = getCalendar(isNewAlarm);
         if (calendar == null) { // Il n'y pas d'alarme � set
-            Log.d("ProjetE3","Pas de repetition");
             // mettre le champs enable � 0
             DBManager dbManager = new DBManager(context);
             dbManager.open();
 
             int id = dbManager.updateEnable(this.idAlarm,0);
-            Log.d("ProjetE3","Update : " +Integer.toString(id));
             dbManager.close();
 
             return;
         }
         displayCalendar(calendar);
 
-        //Log.d("ProjetE3", "Calendar set");
         long time = calendar.getTimeInMillis();
         //getting the alarm manager
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -152,13 +148,11 @@ public class Alarm {
             // if you don't want the alarm to go off even in Doze mode, use
             // setExact instead
             am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,time, pi);
-            //Log.d("ProjetE3", "Calendar new");
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             am.setExact(AlarmManager.RTC_WAKEUP, time, pi);
         } else {
             am.set(AlarmManager.RTC_WAKEUP, time, pi);
         }
-        Log.d("ProjetE3", "Alarm set");
         Toast.makeText(context, "AlarmManager is set", Toast.LENGTH_SHORT).show();
     }
 
@@ -173,7 +167,6 @@ public class Alarm {
 
         dbManager.close();
 
-        Log.d("ProjetE3", "idAlarme = "+Integer.toString(this.idAlarm));
     }
 
     private Calendar getCalendar(boolean isNewAlarm){
@@ -182,11 +175,9 @@ public class Alarm {
 
         // Si l'alarme n'est pas nouvelle, le prochain jour d'activation est juste � r�cup�rer avec getNextDay
         if (!isNewAlarm) {
-            //Log.d("ProjetE3", "Calendar next");
             return this.getNextDay(); // retourne un calendrier set au prochain jour d'activation
 
         }
-        //Log.d("ProjetE3", "Calendar new");
         // Si isNewAlarm == true alors on doit rechercher quand activer l'alarme
         Calendar calendar = Calendar.getInstance(); // On r�cup�re l'heure actuelle
 
@@ -194,7 +185,6 @@ public class Alarm {
         int actualMinutes = calendar.get(Calendar.MINUTE);
 
 
-        //Log.d("ProjetE3", "Boolean");
         String dayLongName = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
         int today = Calendar.DAY_OF_WEEK -1;
         if (today == 0){
@@ -202,19 +192,14 @@ public class Alarm {
         }else if (today == 6){
             today = 0;
         }
-        Log.d("ProjetE3", "Today : "+today);
-        Log.d("ProjetE3", "TodayEnable : "+cursor.getShort(5+today));
         boolean emptyJours = !this.isRepeating();
 
         // Si aucun jour n'est rempli c'est soit le jour m�me soit le lendemain
         if (emptyJours ) {
-            Log.d("ProjetE3", "Empty");
             // Par d�faut on programme l'alarm pour le jour m�me
             calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
                     timeHour, timeMinutes, 0);
             if (!(timeHour > actualHour || actualHour == timeHour && timeMinutes>actualMinutes)) { // Si l'horaire est inf�rieur � l'heure actuelle on programme pour le lendemain
-                Log.d("ProjetE3", "demain");
-                //Log.d("ProjetE3", Integer.toString(actualHour)+" "+Integer.toString(timeHour) + " |"+Integer.toString(actualMinutes)+" "+Integer.toString(timeMinutes));
                 calendar.add(Calendar.DAY_OF_MONTH, 1);
             }
         } else if ( cursor.getShort(5+today) == 1){
@@ -231,7 +216,6 @@ public class Alarm {
 
             }
         }  else{ // il faut r�cup�rer le prochain jour
-            Log.d("ProjetE3", "Not Empty");
             calendar = this.getNextDay(); // retourne un calendrier set au prochain jour d'activation
         }
 
@@ -246,13 +230,10 @@ public class Alarm {
         dbManager.open();
 
         Cursor cursor = dbManager.fetch(Integer.toString(idAlarm));
-        //Log.d("ProjetE3", "id Alarme" + Integer.toString(idAlarm));
         dbManager.close();
 
         Calendar calendar = Calendar.getInstance(); // On r�cup�re la date actuelle
-        //Log.d("ProjetE3", "date actuelle");
         calendar.add(Calendar.DAY_OF_WEEK, 1); // On ajoute un jour au jour actuel
-        //Log.d("ProjetE3", "date j+1");
         int nextDay = calendar.get(Calendar.DAY_OF_WEEK)-1; // Permet d'obtenir le lendemain
         // On fait -1 car on commence � compter � partir de 1
 
@@ -263,7 +244,6 @@ public class Alarm {
             // On commence depuis le lendemain
 
             activeDay = cursor.getInt(5+nextDay);
-            //Log.d("ProjetE3", "Boucle : " +Integer.toString(nextDay) +" Valeur : " + Integer.toString(activeDay));
             if (activeDay==1) {
                 break;
             }
@@ -272,11 +252,9 @@ public class Alarm {
                 nextDay=0;
             }
         }
-        //Log.d("ProjetE3", "sortie for");
         if (activeDay==0){ // Cela veut dire que l'alarme n'est pas cens� se r�p�ter
             return null;
         }
-        Log.d("ProjetE3", "nextDay = "+Integer.toString(nextDay));
         calendar = SetToNextDayOfWeek(nextDay);
         return calendar;
     }
@@ -290,19 +268,16 @@ public class Alarm {
 
         int currentDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)-1; // Day of week commence a 1
         //add 1 day to the current day until we get to the day we want
-        //Log.d("ProjetE3", "entree while : set : "+Integer.toString(dayOfWeekToSet) + " | actuel : "+Integer.toString(currentDayOfWeek));
         int i=0;
         while(currentDayOfWeek != dayOfWeekToSet){
             calendar.add(Calendar.DAY_OF_WEEK, 1);
             currentDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)-1;
             i+=1;
         }
-        //Log.d("ProjetE3", "sortie while");
         return calendar;
     }
 
     public void displayCalendar(Calendar calendar) {
-
         Log.d("ProjetE3","Prochaine alarme : "+calendar.get(Calendar.YEAR) + "/"+calendar.get(Calendar.MONTH)+"/"+calendar.get(Calendar.DAY_OF_MONTH)+" "+calendar.get(Calendar.HOUR_OF_DAY)+":"+calendar.get(Calendar.MINUTE));
     }
 
@@ -359,23 +334,21 @@ public class Alarm {
 
         // On récupère la pendingIntent
         PendingIntent pi = PendingIntent.getBroadcast(context, idAlarm, i,  PendingIntent.FLAG_NO_CREATE);
-        Log.d("MyAlarmBelal", "Register : "+ (pi!=null));
 
         // Changer la valeur de Enable
         DBManager dbManager = new DBManager(context);
         dbManager.open();
 
-        dbManager.delete(idAlarm);
+        dbManager.updateEnable(idAlarm,0);
         dbManager.close();
 
         // Cancel PendingIntent
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         if(pi != null){
             alarmManager.cancel(pi);
-            Log.d("MyAlarmBelal", "Cancel inside ");
 
         } else {
-            Log.d("MyAlarmBelal", "Pas possible cancel : ");
+            Log.d("ProjetE3", "Cancel impossible");
 
         }
 

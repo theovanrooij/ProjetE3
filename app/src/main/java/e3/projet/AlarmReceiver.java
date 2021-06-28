@@ -1,30 +1,14 @@
 package e3.projet;
 
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.PowerManager;
-import android.os.StrictMode;
-import android.os.SystemClock;
-import android.provider.AlarmClock;
 import android.util.Log;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Toast;
-
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelExec;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.Session;
-
-import java.util.Properties;
 
 /**
  * Created by Belal on 8/29/2017.
+ * Modified by Théo Van Rooij on 06/28/2021.
  */
 
 //class extending the Broadcast Receiver
@@ -37,7 +21,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         //but you can do any task here that you want to be done at a specific time everyday
 
-        Log.d("MyAlarmBelal", "Alarm just fired");
+        Log.d("ProjetE3", "Alarme déclenchée");
 
         String idAlarmString = intent.getStringExtra("EXTRA_ID_ALARM");
 

@@ -2,15 +2,9 @@ package e3.projet;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.ClipData;
-import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.CheckBox;
@@ -19,12 +13,8 @@ import android.widget.TimePicker;
 import android.widget.Button;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.content.Intent;
-import android.provider.AlarmClock;
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap; // import the HashMap class
 
 
@@ -48,7 +38,6 @@ public class CreateAlarmActivity extends AppCompatActivity {
         picker.setIs24HourView(true);
 
         // https://codinginflow.com/tutorials/android/alarmmanager
-        mTextView = findViewById(R.id.textView2);
         mEditText =findViewById(R.id.nbOranges);
 
 
@@ -73,7 +62,6 @@ public class CreateAlarmActivity extends AppCompatActivity {
                 nbOranges=0;
                 nbOranges = Short.parseShort(mEditText.getText().toString());
 
-                mTextView.setText("Heure : " + timeHour + ":" + timeMinutes +", " + nbOranges +" oranges \n");
 
 
                 // Création de la tache programmée
