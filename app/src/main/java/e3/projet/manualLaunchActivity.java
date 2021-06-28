@@ -49,9 +49,6 @@ public class ManualLaunchActivity extends Activity implements OnClickListener {
                 EditText editOranges = (EditText) findViewById(R.id.editOranges);
                 String nbOranges = editOranges.getText().toString();
 
-                Log.d("Projet",nbOranges);
-
-
                 // Execution de la commande
                 CommandRaspberry.sendCommandOrangeRaspberry(getApplicationContext(),nbOranges);
 
